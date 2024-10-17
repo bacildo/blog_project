@@ -1,0 +1,75 @@
+*.gem
+*.rbc
+/.config
+/coverage/
+/InstalledFiles
+/pkg/
+/spec/reports/
+/spec/examples.txt
+/test/tmp/
+/test/version_tmp/
+/tmp/
+
+# Arquivos específicos do ambiente de desenvolvimento
+.env
+.env.*
+!.env.example
+
+# Documentação gerada
+/doc/
+/rdoc/
+
+# Dependências
+/.bundle/
+/vendor/bundle
+/lib/bundler/man/
+
+# Logs
+*.log
+/log/*
+!/log/.keep
+
+# Arquivos temporários
+.byebug_history
+.dat*
+.repl_history
+build/
+*.bridgesupport
+
+# Arquivos específicos do RVM
+.rvmrc
+.ruby-version
+.ruby-gemset
+
+# Arquivos específicos do IDE/Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Banco de dados
+/db/*.sqlite3
+/db/*.sqlite3-journal
+/db/*.sqlite3-shm
+/db/*.sqlite3-wal
+
+# Assets e arquivos compilados
+/public/assets
+/public/system
+/public/uploads
+/node_modules/
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity
+
+# Cache
+.sass-cache/
+/tmp/cache/
+/tmp/storage/
+
+# Outros
+.DS_Store
+*.pid
+*.seed
+*.pid.lock

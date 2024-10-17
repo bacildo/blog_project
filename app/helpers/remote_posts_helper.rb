@@ -1,0 +1,2 @@
+module RemotePostsHelper
+end
