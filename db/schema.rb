@@ -10,9 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_17_144904) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_17_152550) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "jwt_denylists", force: :cascade do |t|
+    t.string "jti", null: false
+    t.datetime "exp", precision: nil, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["jti"], name: "index_jwt_denylists_on_jti"
+  end
 
   create_table "posts", force: :cascade do |t|
     t.string "title"

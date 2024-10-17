@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
   # Rotas do Devise para autenticação de usuários
-  devise_for :users
+  devise_for :users, controllers: {
+    registrations: 'users/registrations',
+    sessions: 'users/sessions'
+  }
 
   # CRUD de postagens locais
   resources :posts

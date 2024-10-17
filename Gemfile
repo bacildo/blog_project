@@ -20,6 +20,9 @@ gem "jbuilder"
 # gem "redis", ">= 4.0.1"
 gem "http"
 gem "devise"
+gem "devise-jwt"
+gem 'rack-cors', require: 'rack/cors'
+
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
