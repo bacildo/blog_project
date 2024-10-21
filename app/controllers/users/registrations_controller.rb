@@ -8,7 +8,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     build_resource(sign_up_params)  # Passando os parâmetros de inscrição
 
     if resource.save
-      render json: { message: 'User created successfully', token: resource.generate_jwt }, status: :created
+      render json: { message: 'User created successfully'}, status: :created
     else
       render json: { errors: resource.errors.full_messages }, status: :unprocessable_entity
     end
