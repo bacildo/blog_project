@@ -191,6 +191,7 @@ GEM
       racc
     pg (1.5.8)
     pg (1.5.8-x64-mingw-ucrt)
+    prism (1.2.0)
     psych (5.1.2)
       stringio
     public_suffix (6.0.1)
@@ -238,6 +239,8 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.2.1)
+    rbs (3.6.1)
+      logger
     rdoc (6.7.0)
       psych (>= 4.0.0)
     regexp_parser (2.9.2)
@@ -275,6 +278,11 @@ GEM
       rubocop-minitest
       rubocop-performance
       rubocop-rails
+    ruby-lsp (0.20.1)
+      language_server-protocol (~> 3.17.0)
+      prism (>= 1.2, < 2.0)
+      rbs (>= 3, < 4)
+      sorbet-runtime (>= 0.5.10782)
     ruby-progressbar (1.13.0)
     rubyzip (2.3.2)
     securerandom (0.3.1)
@@ -284,6 +292,7 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    sorbet-runtime (0.5.11609)
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
@@ -344,7 +353,9 @@ DEPENDENCIES
   puma (>= 5.0)
   rack-cors
   rails (~> 7.2.1, >= 7.2.1.1)
+  rubocop
   rubocop-rails-omakase
+  ruby-lsp
   selenium-webdriver
   sprockets-rails
   stimulus-rails
