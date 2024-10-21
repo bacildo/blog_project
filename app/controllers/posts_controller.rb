@@ -1,39 +1,37 @@
 class PostsController < ApplicationController
-  # Esta linha garante que apenas usuários autenticados possam criar, atualizar e excluir postagens
-  before_action :authenticate_user!, only: [:create, :update, :destroy]
+  skip_before_action :verify_authenticity_token, only: [:create, :update, :destroy] # Desabilitar CSRF apenas para ações API
+
+  before_action :authenticate_user! 
   before_action :set_post, only: [:show, :update, :destroy]
 
-  # GET /posts
   def index
-    @posts = Post.all
+    @posts = Post.where(user: current_user)
     render json: @posts
   end
 
-  # GET /posts/:id
   def show
     render json: @post
   end
 
-  # POST /posts
   def create
-    @post = Post.new(post_params)
+    Rails.logger.info("Current User: #{current_user.inspect}") # Verifica o usuário atual
+    @post = current_user.posts.build(post_params)
+  
     if @post.save
       render json: @post, status: :created
     else
-      render json: @post.errors, status: :unprocessable_entity
+      render json: { errors: @post.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
-  # PUT /posts/:id
   def update
     if @post.update(post_params)
       render json: @post
     else
-      render json: @post.errors, status: :unprocessable_entity
+      render json: { errors: @post.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
-  # DELETE /posts/:id
   def destroy
     @post.destroy
     head :no_content
