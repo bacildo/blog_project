@@ -24,6 +24,8 @@ gem "devise-jwt"
 gem 'rack-cors', require: 'rack/cors'
 gem "ruby-lsp"
 gem "rubocop"
+gem "httparty"
+
 
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]

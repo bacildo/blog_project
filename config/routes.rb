@@ -6,10 +6,11 @@ Rails.application.routes.draw do
   }
 
   # CRUD de postagens locais
-  resources :posts
-
-  # Rota para buscar postagens remotas
-  get 'remote_posts', to: 'remote_posts#index'
+  resources :posts do
+    collection do
+      get 'remote', to: 'posts#remote_posts'  # Rota para buscar postagens remotas
+    end
+  end
 
   # Define a rota raiz (opcional, pode ser a página de login ou lista de posts)
   root to: 'posts#index'
