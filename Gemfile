@@ -25,6 +25,8 @@ gem 'rack-cors', require: 'rack/cors'
 gem "ruby-lsp"
 gem "rubocop"
 gem "httparty"
+gem "kaminari"
+
 
 
 

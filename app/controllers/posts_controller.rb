@@ -7,7 +7,7 @@ class PostsController < ApplicationController
 
   # Lista todos os posts locais do usuário autenticado
   def index
-    @posts = current_user.posts
+    @posts = Post.where(user: current_user).page(params[:page]).per(10)    
     render json: @posts, status: :ok
   end
 
@@ -44,8 +44,9 @@ class PostsController < ApplicationController
 
   # Busca posts remotos da API externa
   def remote_posts
-    response = fetch_remote_posts
-
+    page = params[:page] || 1
+    page_size = params[:page_size] || 10
+    response = fetch_remote_posts(page, page_size)
     if response.success?
       render json: response.parsed_response["articles"], status: :ok
     else
@@ -54,6 +55,14 @@ class PostsController < ApplicationController
   end
 
   private
+
+  # Busca posts remotos da API com paginação
+  def fetch_remote_posts(page, page_size)
+    url = "https://newsapi.org/v2/everything?q=watches&apiKey=#{Rails.application.credentials.news_api[:key]}&
+            page=#{page}&pageSize=#{page_size}" 
+    HTTParty.get(url)
+  end
+end
 
   # Define o post atual para ações específicas
   def set_post
@@ -64,10 +73,3 @@ class PostsController < ApplicationController
   def post_params
     params.require(:post).permit(:title, :content, :image_url) 
   end
-
-  # Busca posts remotos da API
-  def fetch_remote_posts
-    url = "https://newsapi.org/v2/everything?q=watches&apiKey=#{Rails.application.credentials.news_api[:key]}" 
-    HTTParty.get(url)
-  end
-end
