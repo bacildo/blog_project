@@ -26,6 +26,9 @@ gem "ruby-lsp"
 gem "rubocop"
 gem "httparty"
 gem "kaminari"
+gem "react-rails"
+gem "jsbundling-rails"
+
 
 
 
