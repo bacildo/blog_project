@@ -24,7 +24,7 @@ export default function Login() {
     try {
       const token = await loginUser(data);
       Cookies.set("token", token.data, { expires: 1 });
-      navigate("/");
+      navigate("/posts");
     } catch (error) {
       setErrorsApi(error.message);
       console.log(error.message);

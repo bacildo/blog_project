@@ -45,8 +45,8 @@ class PostsController < ApplicationController
   # Busca posts remotos da API externa
   def remote_posts
     page = params[:page] || 1
-    page_size = params[:page_size] || 10
-    response = fetch_remote_posts(page, page_size)
+    limit = params[:limit] || 10
+    response = fetch_remote_posts(page, limit)
     if response.success?
       render json: response.parsed_response["articles"], status: :ok
     else
@@ -57,9 +57,9 @@ class PostsController < ApplicationController
   private
 
   # Busca posts remotos da API com paginação
-  def fetch_remote_posts(page, page_size)
+  def fetch_remote_posts(page, limit)
     url = "https://newsapi.org/v2/everything?q=watches&apiKey=#{Rails.application.credentials.news_api[:key]}&
-            page=#{page}&pageSize=#{page_size}" 
+            page=#{page}&limit=#{limit}" 
     HTTParty.get(url)
   end
 end
