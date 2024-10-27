@@ -118,6 +118,7 @@ GEM
     dry-auto_inject (1.0.1)
       dry-core (~> 1.0)
       zeitwerk (~> 2.6)
+    dry-cli (1.2.0)
     dry-configurable (1.2.0)
       dry-core (~> 1.0, < 2)
       zeitwerk (~> 2.6)
@@ -227,6 +228,8 @@ GEM
     rack (3.1.8)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
+    rack-proxy (0.7.7)
+      rack
     rack-session (2.0.0)
       rack (>= 3.0.0)
     rack-test (2.1.0)
@@ -347,6 +350,14 @@ GEM
       tzinfo (>= 1.0.0)
     unicode-display_width (2.6.0)
     useragent (0.16.10)
+    vite_rails (3.0.18)
+      railties (>= 5.1, < 9)
+      vite_ruby (~> 3.0, >= 3.2.2)
+    vite_ruby (3.9.0)
+      dry-cli (>= 0.7, < 2)
+      logger (~> 1.6)
+      rack-proxy (~> 0.6, >= 0.6.1)
+      zeitwerk (~> 2.2)
     warden (1.2.9)
       rack (>= 2.0.9)
     warden-jwt_auth (0.10.0)
@@ -398,6 +409,7 @@ DEPENDENCIES
   stimulus-rails
   turbo-rails
   tzinfo-data
+  vite_rails
   web-console
 
 BUNDLED WITH

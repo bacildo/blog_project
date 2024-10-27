@@ -4,9 +4,9 @@ class Users::SessionsController < Devise::SessionsController
   respond_to :json
 
   def create
-    user = User.find_by(email: params[:email])
+    user = User.find_by(email: params[:user][:email]) 
 
-    if user&.valid_password?(params[:password])
+    if user&.valid_password?(params[:user][:password]) 
       token = user.generate_jwt
       render json: { token: token }, status: :ok
     else
