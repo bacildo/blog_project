@@ -1,12 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import PostsLists from "./pages/PostsList.jsx";
 import "../../index.css"
 
 const router = createBrowserRouter([
+  
+  {
+    path: "/", 
+    element: <Navigate to="/login" />, 
+  },
   {
     path: "/login",
     element: <Login />,

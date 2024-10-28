@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../../schemas/Register";
 import { registerUser } from "../../services/User";
 import { useState } from "react";
+import ErrorsInput from "../components/ErrorsInput";
 
 export default function Register() {
   const {
@@ -15,7 +16,6 @@ export default function Register() {
     formState: { errors },
   } = useForm({ resolver: zodResolver(registerSchema) });
   const navigate = useNavigate();
-
   const [errorsApi, setErrorsApi] = useState("");
 
   async function handleForm(data) {
@@ -24,15 +24,14 @@ export default function Register() {
       navigate("/login");
     } catch (error) {
       setErrorsApi(error.message);
-      console.log(error.message);
     }
   }
+
   return (
-    <div className="flex flex-col items-center justify-around bg-zinc-900 rounded p-8 w-[35rem] h-[35rem] relative">
+    <div className="flex flex-col items-center justify-around bg-zinc-900 rounded p-8 w-[25rem] h-[25rem] relative">
       <Link to="/login">
-        <IoArrowBackCircleOutline className="text-white absolute top-3 left-3 text-2xl  hover:text-teal-200" />
+        <IoArrowBackCircleOutline className="text-white absolute top-3 left-3 text-2xl hover:text-teal-200" />
       </Link>
-      <img src={wallet} alt="" className="w-44" />
       {errorsApi && <ErrorsInput message={errorsApi} />}
       <form
         onSubmit={handleSubmit(handleForm)}
@@ -67,3 +66,4 @@ export default function Register() {
     </div>
   );
 }
+

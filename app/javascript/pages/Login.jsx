@@ -36,11 +36,11 @@ export default function Login() {
   })
 
   return (
-    <div className="flex flex-col items-center justify-around bg-zinc-900 rounded p-8 w-[35rem] h-[35rem]">
+    <div className="flex flex-col items-center justify-around bg-zinc-900 rounded p-8 w-[25rem] h-[25rem] relative">
       
       <form
         onSubmit={handleSubmit(handleForm)}
-        className="flex flex-col items-center justify-center gap-4 w-full text-2xl"
+        className="flex flex-col justify-center gap-4 w-full text-2xl"
       >
         <Input
           type="email"

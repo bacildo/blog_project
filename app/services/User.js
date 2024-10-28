@@ -33,6 +33,7 @@ export const registerUser = async (userData) => {
     const response = await axios.post('/users', {
       user: userData
     });
+    console.log('REGISTER', response)
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: 'Erro ao registrar usuário' };

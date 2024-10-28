@@ -243,6 +243,7 @@ export default function PostsList() {
                   <th className="border-b-2 border-gray-300 px-4 py-2">
                     Conteúdo
                   </th>
+                  <th className="border-b-2 border-gray-300 px-4 py-2">Url</th>
                   <th className="border-b-2 border-gray-300 px-4 py-2">
                     Ações
                   </th>
@@ -257,6 +258,9 @@ export default function PostsList() {
                       </td>
                       <td className="border-b border-gray-300 px-4 py-2">
                         {post.content}
+                      </td>
+                      <td className="border-b border-gray-300 px-4 py-2">
+                        {post.image_url}
                       </td>
                       <td className="border-b border-gray-300 px-4 py-2">
                         <button
@@ -304,9 +308,7 @@ export default function PostsList() {
                   <th className="border-b-2 border-gray-300 px-4 py-2">
                     Fonte
                   </th>
-                  <th className="border-b-2 border-gray-300 px-4 py-2">
-                    Ações
-                  </th>
+                  <th className="border-b-2 border-gray-300 px-4 py-2">Url</th>
                 </tr>
               </thead>
               <tbody>
@@ -320,9 +322,14 @@ export default function PostsList() {
                         {post.source.name}
                       </td>
                       <td className="border-b border-gray-300 px-4 py-2">
-                        <button className="text-blue-500 hover:underline">
+                        <a
+                          href={post.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 hover:underline"
+                        >
                           Visualizar
-                        </button>
+                        </a>
                       </td>
                     </tr>
                   ))
