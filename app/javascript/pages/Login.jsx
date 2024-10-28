@@ -60,7 +60,7 @@ export default function Login() {
       </form>
       <p className="text-white text-2xl">
         Não possui uma conta?
-        <Link to="/register" className="text-lime-300 hover:text-lime-500">
+        <Link to="/users" className="text-lime-300 hover:text-lime-500">
           Clique aqui!
         </Link>{" "}
       </p>

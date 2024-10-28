@@ -1,14 +1,17 @@
 class PostsController < ApplicationController
   require 'httparty'
 
-  skip_before_action :verify_authenticity_token, only: [:create, :update, :destroy] # Para desabilitar CSRF nas ações da API
-  before_action :authenticate_user!  # Garante que o usuário esteja autenticado
+  skip_before_action :verify_authenticity_token, only: [:create, :update, :destroy]
+  before_action :authenticate_user!  
   before_action :set_post, only: [:show, :update, :destroy]
 
-  # Lista todos os posts locais do usuário autenticado
+  # Lista todos os posts locais do usuário autenticado, ordenados por created_at
   def index
-    @posts = Post.where(user: current_user).page(params[:page]).per(10)    
-    render json: @posts, status: :ok
+    @posts = Post.where(user: current_user).order(created_at: :desc).page(params[:page]).per(10)
+    render json: {
+      posts: @posts,
+      total_pages: @posts.total_pages
+    }, status: :ok
   end
 
   # Mostra um post local específico
@@ -47,8 +50,13 @@ class PostsController < ApplicationController
     page = params[:page] || 1
     limit = params[:limit] || 10
     response = fetch_remote_posts(page, limit)
+    
     if response.success?
-      render json: response.parsed_response["articles"], status: :ok
+      articles = response.parsed_response["articles"].sort_by { |article| article["publishedAt"] }
+      total_results = response.parsed_response["totalResults"] # Total de resultados da API
+      total_pages = (total_results / limit.to_f).ceil # Calcula total de páginas
+  
+      render json: { articles: articles, total_pages: total_pages }, status: :ok
     else
       render json: { error: "Erro ao buscar posts remotos" }, status: :bad_request
     end
@@ -56,13 +64,11 @@ class PostsController < ApplicationController
 
   private
 
-  # Busca posts remotos da API com paginação
+  # Busca posts remotos da API com paginação e ordenação
   def fetch_remote_posts(page, limit)
-    url = "https://newsapi.org/v2/everything?q=watches&apiKey=#{Rails.application.credentials.news_api[:key]}&
-            page=#{page}&limit=#{limit}" 
+    url = "https://newsapi.org/v2/everything?q=watches&apiKey=#{Rails.application.credentials.news_api[:key]}&page=#{page}&pageSize=#{limit}&sortBy=publishedAt" 
     HTTParty.get(url)
   end
-end
 
   # Define o post atual para ações específicas
   def set_post
@@ -73,3 +79,4 @@ end
   def post_params
     params.require(:post).permit(:title, :content, :image_url) 
   end
+end

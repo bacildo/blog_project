@@ -25,15 +25,25 @@ export const createPost = async (postData) => {
   }
 };
 
-export const getPosts = async (page = 1, limit = 10) => {
+// Método para buscar posts locais com ordenação
+export const getPosts = async (page = 1, limit = 10, sortBy = "created_at", order = "desc") => {
   try {
-    const response = await axios.get(`/posts?page=${page}&limit=${limit}`);
+    const response = await axios.get(`/posts?page=${page}&limit=${limit}&sort=${sortBy}&order=${order}`);
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: "Erro ao buscar os posts." };
   }
 };
 
+// Método para buscar posts remotos com ordenação
+export const getRemotePosts = async (page = 1, limit = 10, sortBy = "publishedAt", order = "desc") => {
+  try {
+    const response = await axios.get(`/posts/remote?page=${page}&limit=${limit}&sort=${sortBy}&order=${order}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Erro ao buscar os posts remotos." };
+  }
+};
 export const deletePost = async (postId) => {
   try {
     const response = await axios.delete(`/posts/${postId}`);
@@ -53,3 +63,5 @@ export const updatePost = async (postId, postData) => {
     throw error.response?.data || { message: "Erro ao atualizar o post." };
   }
 };
+
+
