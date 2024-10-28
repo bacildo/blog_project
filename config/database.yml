@@ -8,8 +8,8 @@ default: &default
 
 development:
   <<: *default
-  database: <%= ENV.fetch("DB_NAME", "blog_project_development") %>
+  database: <%= ENV.fetch("DB_NAME") %>
 
 test:
   <<: *default
-  database: <%= ENV.fetch("DB_NAME_TEST", "blog_project_test") %>
+  database: <%= ENV.fetch("DB_NAME_TEST") %>

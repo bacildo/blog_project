@@ -189,7 +189,7 @@ export default function PostsList() {
       {errorsApi && <div className="text-red-500">{errorsApi}</div>}
       <form
         onSubmit={handleSubmit(handleForm)}
-        className="flex flex-col justify-center gap-4 w-full text-2xl"
+        className="flex flex-col justify-center gap-4 w-3/5 text-2xl"
       >
         <Input
           type="text"

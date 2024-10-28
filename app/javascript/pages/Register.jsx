@@ -28,7 +28,7 @@ export default function Register() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-around bg-zinc-900 rounded p-8 w-[25rem] h-[25rem] relative">
+    <div className="flex flex-col items-center justify-around bg-zinc-900 rounded p-8 w-[30rem] h-[30rem] relative">
       <Link to="/login">
         <IoArrowBackCircleOutline className="text-white absolute top-3 left-3 text-2xl hover:text-teal-200" />
       </Link>

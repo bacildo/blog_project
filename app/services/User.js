@@ -15,7 +15,6 @@ axios.interceptors.request.use(config => {
 });
 
 export const loginUser = async (credentials) => {
-  console.log('credentials', credentials)
   try {
     const response = await axios.post('/users/sign_in', {
       user: credentials
@@ -33,7 +32,6 @@ export const registerUser = async (userData) => {
     const response = await axios.post('/users', {
       user: userData
     });
-    console.log('REGISTER', response)
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: 'Erro ao registrar usuário' };

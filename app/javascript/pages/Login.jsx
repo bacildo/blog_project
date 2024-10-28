@@ -7,7 +7,6 @@ import Input from "../components/Input";
 import { loginSchema } from "../../schemas/Login";
 import { loginUser } from "../../services/User";
 import { useEffect, useState } from "react";
-import ErrorsInput from "../components/ErrorsInput";
 
 export default function Login() {
   const {
@@ -26,18 +25,17 @@ export default function Login() {
       Cookies.set("token", token.data, { expires: 1 });
       navigate("/posts");
     } catch (error) {
-      setErrorsApi(error.message);
-      console.log(error.message);
+      console.log("Erro na requisição:", error.errors[0]);
+      setErrorsApi(error.errors[0]);
     }
   }
 
-  useEffect(()=>{
-    Cookies.remove("token")
-  })
+  useEffect(() => {
+    Cookies.remove("token");
+  });
 
   return (
-    <div className="flex flex-col items-center justify-around bg-zinc-900 rounded p-8 w-[25rem] h-[25rem] relative">
-      
+    <div className="flex flex-col items-center justify-around bg-zinc-900 rounded p-8 w-[30rem] h-[30rem] relative">
       <form
         onSubmit={handleSubmit(handleForm)}
         className="flex flex-col justify-center gap-4 w-full text-2xl"
@@ -48,21 +46,32 @@ export default function Login() {
           register={register}
           name="email"
         />
-        {errors.email && <ErrorsInput message={errors.email.message} />}
+        {errors.email && (
+          <div className="text-red-500">{errors.email.message}</div>
+        )}
+        
         <Input
           type="password"
           placeholder="Senha"
           register={register}
           name="password"
         />
-        {errors.password && <ErrorsInput message={errors.password.message} />}
+        {errors.password && (
+          <div className="text-red-500">{errors.password.message}</div>
+        )}
+        
         <Button type="submit" title="Login" />
+        
+        {errorsApi && (
+          <div className="text-red-500 mt-2">{errorsApi}</div>
+        )}
       </form>
+      
       <p className="text-white text-2xl">
-        Não possui uma conta?
+        Não possui uma conta?{" "}
         <Link to="/users" className="text-lime-300 hover:text-lime-500">
           Clique aqui!
-        </Link>{" "}
+        </Link>
       </p>
     </div>
   );
