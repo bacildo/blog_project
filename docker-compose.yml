@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  web:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: rails  # Usa o alvo "rails" do Dockerfile para o contêiner Rails
+    command: ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
+    environment:
+      - DB_HOST=db
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - NEWS_API_KEY=${NEWS_API_KEY}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  vite:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: vite  # Usa o alvo "vite" do Dockerfile para o contêiner Vite
+    command: ["yarn", "dev", "--host"]
+    environment:
+      - VITE_API_URL=http://web:3000
+    ports:
+      - "3001:3001"
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:

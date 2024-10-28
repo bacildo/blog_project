@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
     return render json: { errors: ['Unauthorized'] }, status: :unauthorized unless token
 
     begin
-      decoded_token = JWT.decode(token, Rails.application.credentials.devise[:jwt_secret_key]).first
+      decoded_token = JWT.decode(token, ENV['JWT_SECRET_KEY']).first
       Rails.logger.debug "Decoded Token: #{decoded_token}"
       @current_user = User.find(decoded_token['user_id'])
     rescue JWT::DecodeError, ActiveRecord::RecordNotFound

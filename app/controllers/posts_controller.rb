@@ -66,7 +66,7 @@ class PostsController < ApplicationController
 
   # Busca posts remotos da API com paginação e ordenação
   def fetch_remote_posts(page, limit)
-    url = "https://newsapi.org/v2/everything?q=watches&apiKey=#{Rails.application.credentials.news_api[:key]}&page=#{page}&pageSize=#{limit}&sortBy=publishedAt" 
+    url = "https://newsapi.org/v2/everything?q=watches&apiKey=#{ENV['NEWS_API_KEY']}&page=#{page}&pageSize=#{limit}&sortBy=publishedAt" 
     HTTParty.get(url)
   end
 

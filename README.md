@@ -2,59 +2,59 @@
 
 Uma API de blog com CRUD de posts locais e busca de posts remotos, com autenticação JWT e suporte a paginação para exibição dos dados no frontend.
 
-## Índice
-
-- [Instalação e Configuração](#instalação-e-configuração)
-- [Autenticação e Segurança](#autenticação-e-segurança)
+## Sumário
+- [Instalação](#instalação)
+- [Configuração](#configuração)
+- [Autenticação](#autenticação)
 - [Endpoints](#endpoints)
-  - [User Registration](#user-registration)
-  - [User Login](#user-login)
-  - [Posts Locais](#posts-locais)
-  - [Posts Remotos](#posts-remotos)
 - [Paginação](#paginação)
 
-## Instalação e Configuração
+## Instalação
 
-### 1. Pré-requisitos
+### Pré-requisitos
+- Docker
+- Docker Compose
 
-- Ruby: Versão 3.x
-- Rails: Versão 7.x ou superior
-- PostgreSQL: Como banco de dados principal
+### Passos de Instalação
 
-### 2. Configuração
-
-Clone o repositório e configure o ambiente:
-
+1. Clone o repositório:
 ```bash
 git clone <url-do-repositorio>
 cd <nome-do-repositorio>
-bundle install
-rails db:create db:migrate
 ```
 
-Para configurar a chave de API do NewsAPI, crie o arquivo `config/credentials.yml.enc`:
-
-No vscode é possível abrir o arquivo através do comando set EDITOR=code --wait && rails credentials:edit, após terminar a edição basta fechar para que o mesmo seja encriptado e salvo.
-
-```yaml
-devise:
-  jwt_secret_key: 'sua_jwt_key'
-news_api:
-  key: sua_key
+2. Configure as variáveis de ambiente:
+   - Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+```env
+DB_USERNAME=seu_usuario
+DB_PASSWORD=sua_senha
+DB_HOST=db
+DB_PORT=5432
+DB_NAME=nome_do_banco
+JWT_SECRET_KEY=sua_chave_jwt
+NEWS_API_KEY=sua_chave_news_api
 ```
 
-## Autenticação e Segurança
+3. Inicie a aplicação:
+```bash
+docker-compose up --build
+```
 
-A API utiliza autenticação JWT para proteger os endpoints. O token JWT é gerado no login e deve ser incluído em cada requisição autenticada no cabeçalho `Authorization` com o formato `Bearer <token>`.
+**Nota:** O `entrypoint.sh` configura automaticamente o banco de dados, executando `db:create` e `db:migrate`.
+
+## Autenticação
+
+A API utiliza JWT (JSON Web Token) para autenticação. Para acessar endpoints protegidos:
+- Inclua o token no header `Authorization`
+- Formato: `Bearer <token>`
 
 ## Endpoints
 
-### User Registration
+### Usuários
 
-- **Rota**: `/users`
-- **Método**: `POST`
-- **Descrição**: Cadastra um novo usuário.
-- **Parâmetros**:
+#### Registro
+- **POST** `/users`
+- **Corpo da requisição:**
 ```json
 {
   "user": {
@@ -64,37 +64,31 @@ A API utiliza autenticação JWT para proteger os endpoints. O token JWT é gera
   }
 }
 ```
-- **Resposta**:
-  - 201 Created: `{"message": "User created successfully"}`
-  - 422 Unprocessable Entity: `{"errors": ["error_message"]}`
+- **Respostas:**
+  - `201`: Usuário criado
+  - `422`: Erro de validação
 
-### User Login
-
-- **Rota**: `/users/sign_in`
-- **Método**: `POST`
-- **Descrição**: Faz o login de um usuário e retorna um token JWT.
-- **Parâmetros**:
+#### Login
+- **POST** `/users/sign_in`
+- **Corpo da requisição:**
 ```json
 {
-  "user":{
-    "email":"exemplo@teste.com",
+  "user": {
+    "email": "exemplo@teste.com",
     "password": "123456"
   }
 }
 ```
-- **Resposta**:
-  - 200 OK: `{"token": "jwt_token"}`
-  - 401 Unauthorized: `{"errors": ["Invalid email or password"]}`
+- **Respostas:**
+  - `200`: Login bem-sucedido (retorna token JWT)
+  - `401`: Credenciais inválidas
 
 ### Posts Locais
 
 #### Criar Post
-
-- **Rota**: `/posts`
-- **Método**: `POST`
-- **Autenticação**: JWT
-- **Descrição**: Cria uma nova postagem associada ao usuário logado.
-- **Parâmetros**:
+- **POST** `/posts`
+- **Autenticação:** Requerida
+- **Corpo da requisição:**
 ```json
 {
   "post": {
@@ -104,66 +98,51 @@ A API utiliza autenticação JWT para proteger os endpoints. O token JWT é gera
   }
 }
 ```
-- **Resposta**:
-  - 201 Created: Dados do post criado
-  - 422 Unprocessable Entity: `{"errors": ["error_message"]}`
 
-#### Listar Posts (Paginação)
-
-- **Rota**: `/posts`
-- **Método**: `GET`
-- **Autenticação**: JWT
-- **Descrição**: Retorna uma lista paginada dos posts locais do usuário logado.
-- **Parâmetros de Query**:
-  - `page`: Número da página (opcional, padrão = 1)
-  - `limit`: Número de posts por página (opcional, padrão = 10)
-- **Resposta**:
-  - 200 OK: Lista de posts locais com paginação
+#### Listar Posts
+- **GET** `/posts`
+- **Autenticação:** Requerida
+- **Parâmetros:**
+  - `page`: Número da página (opcional, padrão: 1)
+  - `limit`: Posts por página (opcional, padrão: 10)
 
 #### Atualizar Post
-
-- **Rota**: `/posts/:id`
-- **Método**: `PUT`
-- **Autenticação**: JWT
-- **Descrição**: Atualiza um post do usuário logado.
-- **Parâmetros**: Mesmos parâmetros de criação de post.
-- **Resposta**:
-  - 200 OK: Dados do post atualizado
-  - 404 Not Found: `{"error": "Post not found"}`
+- **PUT** `/posts/:id`
+- **Autenticação:** Requerida
+- **Corpo da requisição:** Igual ao de criação
 
 #### Deletar Post
-
-- **Rota**: `/posts/:id`
-- **Método**: `DELETE`
-- **Autenticação**: JWT
-- **Descrição**: Deleta um post do usuário logado.
-- **Resposta**:
-  - 204 No Content: Post deletado
-  - 404 Not Found: `{"error": "Post not found"}`
+- **DELETE** `/posts/:id`
+- **Autenticação:** Requerida
+- **Respostas:**
+  - `204`: Post deletado
+  - `404`: Post não encontrado
 
 ### Posts Remotos
 
-- **Rota**: `/posts/remote`
-- **Método**: `GET`
-- **Autenticação**: JWT
-- **Descrição**: Retorna uma lista de posts remotos paginada da API externa.
-- **Parâmetros de Query**:
-  - `page`: Número da página (opcional, padrão = 1)
-  - `page_size`: Quantidade de itens por página (opcional, padrão = 10)
-- **Resposta**:
-  - 200 OK: Lista de posts remotos
-  - 400 Bad Request: `{"error": "Erro ao buscar posts remotos"}`
+#### Buscar Posts Remotos
+- **GET** `/posts/remote`
+- **Autenticação:** Requerida
+- **Parâmetros:**
+  - `page`: Número da página
+  - `page_size`: Posts por página
 
 ## Paginação
 
-Para posts locais, estamos usando Kaminari, enquanto para posts remotos a paginação é feita usando parâmetros de query diretamente na requisição à API externa. Além disso, o frontend conta com scroll infinito dos dados.
+A API implementa dois tipos de paginação:
+- **Posts Locais:** Utiliza Kaminari
+- **Posts Remotos:** Paginação via parâmetros de query
 
-**Exemplo de Paginação de Posts Locais**:
+### Exemplos de Uso
+
+Posts Locais:
 ```bash
 GET /posts?page=2&limit=10
 ```
 
-**Exemplo de Paginação de Posts Remotos**:
+Posts Remotos:
 ```bash
-GET /posts/remote?page=2&limit=10
+GET /posts/remote?page=2&page_size=10
 ```
+
+O frontend implementa scroll infinito para melhor experiência do usuário.

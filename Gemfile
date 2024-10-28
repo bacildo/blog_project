@@ -29,6 +29,8 @@ gem "kaminari"
 gem "react-rails"
 gem "jsbundling-rails"
 gem "vite_rails"
+gem 'dotenv-rails', groups: [:development, :test]
+
 
 
 

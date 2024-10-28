@@ -230,10 +230,9 @@ Devise.setup do |config|
   # reset. Defaults to true, so a user is signed in automatically after a reset.
   # config.sign_in_after_reset_password = true
 
-
-config.jwt do |jwt|
-  jwt.secret = Rails.application.credentials.devise[:jwt_secret_key]
-end
+  config.jwt do |jwt|
+    jwt.secret = ENV['JWT_SECRET_KEY']
+  end
 
   # ==> Configuration for :encryptable
   # Allow you to use another hashing or encryption algorithm besides bcrypt (default).

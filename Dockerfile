@@ -1,74 +1,65 @@
-# syntax = docker/dockerfile:1
+# Usa a imagem base do Ruby para o Rails
+FROM ruby:3.3.5 AS rails
 
-# This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
-# docker build -t my-app .
-# docker run -d -p 80:80 -p 443:443 --name my-app -e RAILS_MASTER_KEY=<value from config/master.key> my-app
+# Instala PostgreSQL para o cliente do Rails
+RUN apt-get update -qq && apt-get install -y postgresql-client
 
-# Make sure RUBY_VERSION matches the Ruby version in .ruby-version
-ARG RUBY_VERSION=3.3.5
-FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
+# Instala o Bundler globalmente
+RUN gem install bundler
 
-# Rails app lives here
-WORKDIR /rails
+# Define o diretório de trabalho da aplicação Rails
+WORKDIR /app
 
-# Install base packages
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libvips postgresql-client && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+# Copia o entrypoint primeiro e ajusta permissões
+COPY entrypoint.sh ./ 
+RUN chmod +x /app/entrypoint.sh
 
-# Set production environment
-ENV RAILS_ENV="production" \
-    BUNDLE_DEPLOYMENT="1" \
-    BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development"
-
-# Throw-away build stage to reduce size of final image
-FROM base AS build
-
-# Install packages needed to build gems
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libpq-dev pkg-config && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
-
-# Install application gems
+# Copia o Gemfile e o Gemfile.lock para instalar dependências do Rails
 COPY Gemfile Gemfile.lock ./
-RUN bundle install && \
-    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
-    bundle exec bootsnap precompile --gemfile
+RUN bundle install
 
-# Copy application code
+# Copia os arquivos restantes da aplicação Rails
 COPY . .
 
-# Precompile bootsnap code for faster boot times
-RUN bundle exec bootsnap precompile app/ lib/
+# Prepara diretórios e permissões
+RUN chmod -R 775 /app/tmp /app/log && \
+    chown -R root:root /app && \
+    chmod -R 755 /app
 
-# Adjust binfiles to be executable on Linux
-RUN chmod +x bin/* && \
-    sed -i "s/\r$//g" bin/* && \
-    sed -i 's/ruby\.exe$/ruby/' bin/*
+# Define o entrypoint para inicialização
+ENTRYPOINT ["/app/entrypoint.sh"]
 
-# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
-
-
-
-
-# Final stage for app image
-FROM base
-
-# Copy built artifacts: gems, application
-COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
-COPY --from=build /rails /rails
-
-# Run and own only the runtime files as a non-root user for security
-RUN groupadd --system --gid 1000 rails && \
-    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
-    chown -R rails:rails db log storage tmp
-USER 1000:1000
-
-# Entrypoint prepares the database.
-ENTRYPOINT ["/rails/bin/docker-entrypoint"]
-
-# Start the server by default, this can be overwritten at runtime
+# Expõe a porta 3000 para o Rails
 EXPOSE 3000
-CMD ["./bin/rails", "server"]
+
+# Comando para iniciar o servidor Rails
+CMD ["rails", "server", "-b", "0.0.0.0", "-p", "3000"]
+
+# Usa uma imagem do Node.js para o Vite
+FROM node:20.12.2 AS vite
+
+# Define o diretório de trabalho para o Vite
+WORKDIR /app
+
+# Cria um usuário e grupo
+RUN groupadd -g 1001 appuser && \
+    useradd -u 1001 -g appuser -m appuser
+
+# Copia o arquivo de dependências do Node e instala as dependências usando Yarn
+COPY package.json yarn.lock ./
+RUN yarn install
+
+# Copia os arquivos restantes para o Vite
+COPY . .
+
+# Ajusta permissões da pasta node_modules
+RUN chown -R appuser:appuser /app/node_modules
+
+# Altera para o novo usuário
+USER appuser
+
+# Expõe a porta 3001 para o Vite
+EXPOSE 3001
+
+# Comando para iniciar o Vite
+CMD ["yarn", "dev", "--host"]
