@@ -39,7 +39,7 @@ services:
       target: vite  # Usa o alvo "vite" do Dockerfile para o contêiner Vite
     command: ["yarn", "dev", "--host"]
     environment:
-      - VITE_API_URL=http://web:3000
+      - VITE_API_URL=${VITE_API_URL}
     ports:
       - "3001:3001"
     depends_on:
